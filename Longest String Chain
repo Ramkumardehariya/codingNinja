@@ -1,34 +1,51 @@
 #include <bits/stdc++.h> 
-vector<int> divisibleSet(vector<int> &arr){
-     int n = arr.size();
 
-     vector<int> dp(n, 1), hash(n);
-     sort(arr.begin(), arr.end());
+bool check(string &s1, string &s2){
+    if(s1.size() != s2.size()+1){
+        return false;
+    }
+
+    int first = 0;
+    int second = 0;
+
+    while(first < s1.size()){
+        if(s1[first] == s2[second]){
+            first++;
+            second++;
+        }
+        else{
+            first++;
+        }
+    }
+
+    if(first == s1.size() && second == s2.size()){
+        return true;
+    }
+    return false;
+}
+
+bool comp(string &s1, string &s2){
+    return s1.size() < s2.size();
+}
+
+int longestStrChain(vector<string> &arr)
+{
+    int n = arr.size();
+
+     vector<int> dp(n, 1);
+     sort(arr.begin(), arr.end(), comp);
      int maxi = 1;
-     int lastIndex = 0;
 
      for(int i = 0; i<n; i++){
-         hash[i] = i;
+
          for(int prev = 0; prev<i; prev++){
-             if(arr[i] % arr[prev] == 0 && 1 + dp[prev] > dp[i]){
-                 dp[i] = 1 + dp[prev];
-                 hash[i] = prev;
+             if(check(arr[i], arr[prev]) && 1 + dp[prev] > dp[i]){
+                dp[i] = 1 + dp[prev];
              }
          }
          if(dp[i] > maxi){
              maxi = dp[i];
-             lastIndex = i;
          }
      }
-
-     vector<int> temp;
-
-     temp.push_back(arr[lastIndex]);
-
-     while(hash[lastIndex] != lastIndex){
-         lastIndex = hash[lastIndex];
-         temp.push_back(arr[lastIndex]); 
-     }
-     reverse(temp.begin(), temp.end());
-     return temp;
+     return maxi;
 }
